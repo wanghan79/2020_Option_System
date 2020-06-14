@@ -1,0 +1,161 @@
+一．	cp和iop的多缓冲区问题：
+semaphore mutex = 1; //互斥临界资源num
+semaphore S = 1; //互斥缓冲区资源
+int num = 0; //已使用的缓冲区资源
+void cp()
+{
+	while(计算未完成)
+	{
+		得到一个计算结果;
+		P(mutex);
+		if(num < N)
+		{
+			P(S);
+			将数送到缓冲区中;
+			V(S);
+			num++; 
+		} 
+		V(mutex);
+	} 
+} 
+void iop()
+{
+	while(打印工作未完成)
+	{
+		P(mutex);
+		if(num > 0)
+		{
+			P(S);
+			从缓冲区中取数;
+			V(S);
+			num--; 
+		} 
+		V(mutex);
+		从打印机上输出; 
+	} 
+} 
+
+void main()
+{
+	cobegin
+	 cp();
+	 iop();
+	coend
+}
+二．	吃水果问题：
+第一种思路：是有问题的，当先执行Son和Dauthger时会阻塞，没有设置优先级
+semaphore mutex = 1; //互斥盘子 
+semaphone num1 = 0; //记录型信号量橘子数 
+semaphone num2 = 0; //记录型信号量苹果数 
+semaphone num = N; //记录型信号量可用资源数 
+Father()
+{
+	while(1)
+	{
+		P(num);
+		P(mutex);
+		放水果;
+		V(mutex);
+		if(橘子)
+		V(num1);
+		else
+		V(num2) 
+	}
+} 
+Son()
+{
+	while(1)
+	{
+		P(num1);
+		P(mutex);
+		取橘子;
+		V(mutex);
+		V(num);
+		吃橘子; 
+	}
+}
+Daughter()
+{
+	while(1)
+	{
+		P(num2);
+		P(mutex);
+		取苹果;
+		V(mutex);
+		V(num);
+		吃苹果; 
+	}
+}
+void main()
+{
+	cobegin
+	 Father();
+	 Son();
+Dauthger();
+	coend
+}
+第二种思路：
+这个是没有问题的
+semaphore S = 1; //互斥盘子
+semaphone S1 = 1; //互斥临界资源num1 
+semaphone S2 = 1; //互斥临界资源num2
+int num1 = 0; //橘子数 
+int num2 = 0; //苹果数 
+Father()
+{
+	while(1)
+	{
+		Swait(S1; S2);
+		if(num1 + num2 < N)
+		{
+			P(S);
+			放水果;
+			V(S);
+			if(橘子)
+			num1++;
+			else
+			num2++; 
+		}
+		Ssignal(S1; S2);
+	}
+} 
+Son()
+{
+	while(1)
+	{
+		P(S1);
+		if(num1 > 0)
+		{
+			P(S);
+			取橘子;
+			V(S);
+			num1--;
+		}
+		V(S1);
+		吃橘子; 
+	}
+}
+Dauthger()
+{
+	while(1)
+	{
+		P(S2);
+		if(num2 > 0)
+		{
+			P(S);
+			取苹果;
+			V(S);
+			num2--;
+		}
+		V(S2);
+		吃苹果; 
+	}
+}
+void main()
+{
+	cobegin
+	 Father();
+	 Son();
+Dauthger();
+	coend
+}
