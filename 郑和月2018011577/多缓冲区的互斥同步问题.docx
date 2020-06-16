@@ -1,0 +1,52 @@
+1.	对N个共享缓冲区读写问题：
+（1）	互斥+同步；
+（2）	进程：读者，写者
+（3）	信号量：设有四个个信号量w=1，mutex=1，s1=N，s2=0；
+另设一个全局变量readcount =0；
+w用于读者和写者、写者和写者之间的互斥；
+readcount表示正在读的读者数目；
+mutex用于对readcount 这个临界资源的互斥访问;
+s1表示空缓冲区的数目；
+s2表示已用缓冲区的数目。
+（4）	主程序：
+Reader()：                                Writer(){
+   while (1)                                   while(1){
+   {                                            P(s2);
+       P(s1);                                    P(w);
+P(mutex);                                 写；
+       readcount ++;                             V(w);
+       if (readcount==1) P (w);                     V(s1);
+       V(mutex);                               }
+          读；
+       P(mutex);
+       readcount --;
+       if (readcount==0)   V(w);
+       V(mutex);
+       V(s2);
+           }
+int main(){
+     Read();
+     Writer();
+}
+
+
+2.	水果问题：
+（1）	互斥+同步；
+（2）	进程：父亲、女儿、儿子
+（3）	信号量：设置5个个信号量s,so,sa,s1,s2 ，初值分别为1，0，0,N,0。分别表示可否向盘中放水果，可否取桔子，可否取苹果,盘中可放水果数目，盘中已放水果数目。
+（4）	主程序：
+Father(){                Son{                Daughter(){
+While(1){              while(1){              while(1){
+P（s1）;                 P(s2);               P(s2);
+P(s);                    P(so);               P(sa);
+     将水果放入盘中；         取桔子；             取苹果；
+     if(orange) V(so);        V（s）;              V（s）;
+     else V(sa);              吃桔子;              吃苹果；
+V(s2);                   V(s1);               V(s1);
+}                            }                   }
+}                          }                     }
+int main(){
+    Father();
+    Son();
+    Daughter();
+}
