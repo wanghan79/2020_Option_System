@@ -1,0 +1,82 @@
+1.对N个共享缓冲区读写问题
+答：可判断出该问题是一个互斥+同步的问题；该问题可确定为两个进程：一个写数据（写数据到缓冲区）的进程，一个取数据（打印数据）的进程
+设置信号量S1表示空缓冲区的数目，初值为N，S2表示已用缓冲区的数目，初值为0，此外还需设置互斥信号量mutex，初值为1
+Semaphore mutex=1,S1=N,S2=0;
+
+ CP(){
+while(True){
+生产数据
+P(S1);
+P(mutex);
+将数据写入缓冲区
+V(mutex);
+V(S2);
+}
+}
+ IOP(){
+while(True){
+P(S2);
+P(mutex);
+从缓冲区中读数据
+V(mutex);
+V(S1);
+打印数据
+}
+}
+Void main(){
+mutex=1;
+S1=N;
+S2=0;
+cobegin
+	CP();		
+	IOP();
+coend
+}
+2.盘中可放N个水果的吃水果问题，桌上有一空盘，最多允许存放N个水果。爸爸可向盘中放一个苹果或放一个桔子，儿子专等吃盘中的桔子，女儿专等吃苹果。
+答：可判断出该问题是一个互斥+同步的问题；
+设置信号量S表示盘子上可放水果的剩余空间数目，初值为N，Sa表示盘子中桔子的数目，初值为0，Sb表示盘子中苹果的数目，初值为0，互斥信号量mutex，来标记盘子，初值为1。
+Semaphore mutex=1,S=N,Sa=0,Sb=0;
+
+ PFather(){
+while(True){
+P(S);
+   	P(mutex);
+   	将水果放入盘子中
+	V(mutex);
+	if(水果是桔子)
+	V(Sa);
+	else
+	V(Sb); 
+}
+}
+ PSon(){
+while(True){
+P(Sa);
+  P(mutex);
+	取桔子;
+	V(mutex);
+	V(S);
+	吃桔子; 
+}
+}
+ PDaughter(){
+while(True){
+P(Sb);
+P(mutex);
+取苹果;
+V(mutex);
+V(S);
+吃苹果; 
+}
+}
+Void main(){
+mutex=1;
+S=N;
+Sa=0;
+Sb=0;
+cobegin
+PFather();
+PSon();
+PDaughter();
+coend
+}
