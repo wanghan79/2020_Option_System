@@ -46,3 +46,7 @@ def Daughter():
         eatApple()
         V(mutex)
         V(sempty)
+
+Father()
+Son()
+Dauther()
