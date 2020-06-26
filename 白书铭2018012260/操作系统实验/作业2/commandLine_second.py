@@ -1,6 +1,6 @@
 """
 Author: ShuMing.Bai
-Purpose: First: Implement Windows command line calls
+Purpose: Second: Implement Windows command line calls
 Created: 6/24/2020
 """
 import os
