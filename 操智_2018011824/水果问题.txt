@@ -1,0 +1,47 @@
+semaphore empty= N, orange = 0, apple = 0, mutex = 1;
+Father()
+ {
+while (1)
+   {
+P(empty);
+ P (mutex);
+将水果放入盘中;
+V(mutex);
+if (放入的是orange)  
+V(orange);  
+else  
+V(apple);
+}
+}
+Son() 
+{
+     while (1) 
+{
+           P(orange);
+           P(mutex);
+           从盘中取一个orange;
+           V(mutex);
+           V(empty);
+           吃orange;
+         }
+}
+Daughter()
+     {
+       while (1) 
+{
+          P(apple);
+          P(mutex);
+          从盘中取一个apple;
+          V(mutex);
+          V(empty);
+          吃apple;
+        }
+}
+Int main()
+{
+cobegin
+Father();
+ Son();
+Daughter();
+coend
+}

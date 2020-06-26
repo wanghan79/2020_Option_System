@@ -1,0 +1,38 @@
+int i=0;j=0; Int mutex=1;
+    Int buffer[N];
+       semaphore mutex=1,empty=N,full=0;
+void write()
+{
+ While(1)
+{
+计算数据；
+P(empty);
+P(mutex);
+  放入数据；
+   I=(i+1)%N;
+   V(mutex);
+   V(full);
+}
+}
+Void read()
+{
+  While(1)
+{
+    P(full);
+    P(mutex);
+    取出数据；
+    j=(j+1)%N;
+    V(mutex);
+    V(empty);
+    输出数据；
+}
+}
+void main()
+{
+   cobegin;
+    cp();  
+iop();
+   coend;
+}
+
+	

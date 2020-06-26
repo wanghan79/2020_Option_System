@@ -1,0 +1,64 @@
+Monitor readerwriter
+{
+ 	int rcount,wcountt; //正在读的读者人数 
+ 	condition rmutex,wmutex;
+ 	public:
+ 		void startread( )
+ 		{
+ 		   if(wcountt==1) //有人正在写，进入读队列排队 
+			 cwait(rmutex);
+		  rcount++; //读者数加一
+		   csignal(rmutex);	
+		}
+		void endread( ) //结束读 
+		{
+		  rcount--; //正在读的人数减1
+		   if(readcount==0) //如果没有人读了，唤醒等待的写
+		     csignal(wmutex);
+		}
+		void startwrite( ) //开始写 
+		{
+			if(readcount>0||wcountt==1)//如果有人正在读或在写，阻塞自己 
+			  cwait(wmutex);
+			wcountt=1;
+		}
+		void endwrite( ) //结束写 
+		{
+			wcountt=0;
+			if(rmutex!=NULL)
+			  csignal(rmutex);
+			else
+			  csignal(wmutex);
+		}
+	{readcount=0; wcountt=0;}
+}RW;
+
+void Readers( )
+{
+	while(true)
+	{
+		RW.startread( ); //准备开始读 
+		reading //读 
+		RW.endread( ); //结束读
+
+	}
+}
+
+void Writers( ) //写者进程 
+{
+	while(true)
+	{
+		RW.startwrite( ); //准备开始写 
+		writing //写 
+		RW.endwrite( );	 //结束写
+
+	}
+}
+
+void main( ) //主程序 
+{
+	cobegin
+	 Readers();
+	 Writers();
+	coend
+}
