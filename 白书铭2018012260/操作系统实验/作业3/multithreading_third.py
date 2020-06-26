@@ -1,6 +1,6 @@
 """
 Author: ShuMing.Bai
-Purpose: First: Get operating system information using package platform
+Purpose: Third: Create multiple processes
 Created: 6/24/2020
 """
 from multiprocessing import Process
