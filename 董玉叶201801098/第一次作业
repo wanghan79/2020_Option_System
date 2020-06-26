@@ -1,0 +1,35 @@
+
+对N个共享缓冲区读写问题和盘中可放N个水果的吃水果问题进行PV互斥同步解答。
+步骤：
+1.互斥+同步问题
+2.write,read
+3.设置4个信号量：full、empty和mutex,S1
+其中：full表示有数据的缓冲块数目，初值是0；
+empty表示空的缓冲块数初值是n；
+mutex用于访问缓冲区时的互斥，初值是1。
+s1表示空闲缓冲区数目初值为N。
+实际上，full和empty间存在如下关系：full + empty = N
+4.
+write（）{  
+      P(S1) ; //S1--	
+     P(empty) ;  
+     P(mutex) ;  
+      
+     add nextp to buffer  
+      
+     V(mutex) ;  
+    V(full) ;  
+    V(S1);//S1++
+}while(1) ;
+
+read(){  
+     P(S1) ; //S1--	
+     P(full) ;  
+     P(mutex) ;  
+      
+     remove an item from buffer to nextp  
+      
+     V(mutex) ;  
+     V(empty) ;  
+    V(S1);//S1++
+}while(1) ;
