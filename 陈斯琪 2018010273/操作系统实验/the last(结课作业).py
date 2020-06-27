@@ -1,3 +1,10 @@
+##!/usr/bin/python3
+# """
+#   Author:  Sq.Chen
+#   Purpose: Get all files and folders (including subfolders) under the given file directory
+#   Created: 27/6/2020
+# """
+
 import os
 
 def get_all_path(file_path):
