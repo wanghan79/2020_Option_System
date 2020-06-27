@@ -1,0 +1,41 @@
+桌上有一空盘，允许存放一只水果。爸爸可向盘中放苹果，也可向盘中放桔子，儿子专等吃盘中的桔子，女儿专等吃盘中的苹果。规定当盘空时一次只能放一只水果供吃者取用，请用P、V原语实现爸爸、儿子、女儿三个并发进程的同步。
+
+步骤：
+1.互斥+同步问题
+2.father daughter son
+2.设置三个信号量并赋值如下
+	mutex=1//互斥信号量
+	apple=0//盘中苹果数
+	orange=0//盘中橘子数
+	empty=n//空余位置数量
+	（apple+orange<=n）
+4.
+int  apple=0，orange=0，empty=n，mutex=1
+father():
+	while(1):
+		p(empty)//empty--
+		p(mutex)
+		put fruit
+		v(mutex)
+		if(fruit is orange)
+			v(orange)//++
+		else
+			v(apple)//++
+son():
+	while(1)
+		p(orange)//--
+		p(mutex)
+		eat orange
+		v(mutex)
+		v(empty)//empty++
+daughter():
+	while(1)
+		p(apple)//--
+		p(mutex)
+		eat apple
+		v(mutex)
+		v(empty)//empty++
+void main(){
+father(); Son();Daughter();
+}
+		
