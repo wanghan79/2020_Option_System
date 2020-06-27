@@ -1,3 +1,10 @@
+##!/usr/bin/python3
+# """
+#   Author:  Sq.Chen
+#   Purpose: Get information of OS
+#   Created: 25/6/2020
+# """
+
 import platform
 
 def show(name, info):
