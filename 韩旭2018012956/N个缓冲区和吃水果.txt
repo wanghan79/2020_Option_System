@@ -1,0 +1,77 @@
+1.对N个共享缓冲区读写问题PV互斥同步解答
+mutex=1 Sa=0 Sb=N
+void read()
+{
+    while(1)
+    {
+        p(Sa);
+        p(mutex);
+        从缓冲区读一个数；
+        v(mutex);
+        v(Sb);
+        输出结果；
+    }
+}
+void write()
+{
+    while(1)
+    {
+        得到一个结果；
+        p(Sb);
+        p(mutex);
+        将数据写进缓冲区
+        v(mutex);
+        v(Sa);
+
+
+    }
+}
+void main()
+{
+      cobegin;
+      write();
+      read();
+      coend;
+}
+2.盘中可放N个水果的吃水果问题PV互斥同步解答
+ S=1,So=0,Sa=0;
+father（）
+{
+    while(1)
+    {        
+		p(s);                 
+		将水果放入盘中；
+		if（放入盘中的是橘子）
+		      V（s0）;       
+		else
+		     V (sa);        
+        }
+}
+Son()   
+{
+     while(1)
+     {
+		    P(s0);          
+		    从盘子中取出橘子；
+		    V（s）；  
+		    吃橘子；
+      }
+}
+daughter()     
+{
+     while(1)
+     {
+		    P(sa);                      
+		    从盘子中取出苹果；
+		    V（s）；             
+		    吃苹果；
+      }
+}
+void  main（）
+{
+      cobegin;
+      father();
+      son();
+      daugher();
+      coend;
+}
