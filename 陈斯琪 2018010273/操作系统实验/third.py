@@ -1,3 +1,10 @@
+##!/usr/bin/python3
+# """
+#   Author:  Sq.Chen
+#   Purpose: Create multi process
+#   Created: 27/6/2020
+# """
+
 # -*- coding: utf-8 -*-
 from multiprocessing import Process
 import time
