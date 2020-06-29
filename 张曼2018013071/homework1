@@ -1,0 +1,27 @@
+producer and consumer;
+int in=0;
+int out=0;    buffer[n];
+mutex=1;empty=n;full=0;
+void producer()
+do{
+wait(empty);
+wait(mutex);
+buffer[in]=nextin;
+in=(in+1)/%n;
+signal(mutex);
+signal(full);
+}
+void consumer()
+do{
+wait(full);
+wait(mutex);
+nextout=buffer[out];
+out=(out+1)%n
+signal(mutex);
+signal(empty);
+}
+void main(){
+begin
+producer();
+consumer();
+end}
