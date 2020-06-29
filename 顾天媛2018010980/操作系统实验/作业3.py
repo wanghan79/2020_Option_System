@@ -2,7 +2,7 @@
 # -*- coding: UTF-8 -*-
 """
   Author:  Ty.Gu
-  Purpose: random data set & MongoDB
+  Purpose: multiprocessing
   Created: 26/6/2020
 """
 # 作业3. 采用Python语言创建多进程；提示：采用Python内置工具包multiprocessing
