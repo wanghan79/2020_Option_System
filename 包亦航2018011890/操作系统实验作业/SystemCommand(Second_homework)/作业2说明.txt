@@ -1,0 +1,15 @@
+期末作业2：实现windows命令行调用
+
+运行方式：运行Autoping_test.py
+
+文件说明：
+1、Autoping.py：批量ping类，用于读入网站列表批量ping
+2、Random_gener_picker_first_test.py：对此的测试
+3、sample_input.txt：示例网站列表
+
+程序功能介绍：
+1、使用python内置os.system包调用系统ping命令对我们用文件给出的网站列表进行批量ping并输出到output.txt
+
+实验总结：
+1、os.system是在python中非常常用的一个库，在linux环境下更为常用。由于很多linux端软件都采用命令行方式运行，我们如果想利用这些软件批量处理我们的数据，那么就可以使用os.system这个软件包
+2、经过跨平台测试，os.system能够在两大主流操作系统：Windows和Linux下正常运行，但是运行的时候要注意二者的指令集区别
