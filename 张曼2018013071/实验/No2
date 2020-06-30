@@ -1,0 +1,7 @@
+import os
+from threading import Thread
+def execute_cmd_command(command_word:str):
+      os:system(command_word)
+      for i in range(10):
+      t=Thread(target=execute_cmd_command,args=("执行命令"))
+      t.start()
