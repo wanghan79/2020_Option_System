@@ -1,0 +1,28 @@
+import platform
+def TestPlatform( ):
+print (Operation System")
+print platform.python_version()
+print platform.architecture()
+print platform.node()
+print platform.platform()
+print platform.processor()
+print platform.python_build()
+print platform.python_compiler()
+if platform.python_branch()=="":
+print platform.python_implementation()
+print platform.python_revision()
+print platform.release()
+print platform.system()
+print platform.version()
+print platform.uname()
+def UsePlatform( ):
+sysstr = platform.system()
+if(sysstr =="Windows"):
+print ("Call Windows tasks")
+elif(sysstr == "Linux"):
+print ("Call Linux tasks")
+else:
+print ("Other System tasks")
+if __name__ == "__main__" :
+TestPlatform( )
+UsePlatform( )
