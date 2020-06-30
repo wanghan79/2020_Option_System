@@ -1,0 +1,31 @@
+/ *
+    使用PV信号量互斥同步解决如下问题：
+    设某计算进程CP和打印进程IOP共用一个大小为N的T
+    CP进度负责不断地计算数据并送入长度T中
+    IOP进程负责不断地从T中取出数据去打印
+* /
+//不妨设T的大小为N，初始前缀为空
+信号量s_empty = N； 
+信号量s_full = 0 ; 
+//可以保证s_empty + s_full恒等于N
+semaphore mutex = 1; //互斥信号量
+void  Computing_Process（）{
+    而（Computing_Finish（）== false）{
+        计算（）;
+        P（s_empty）;
+        P（mutex）;
+        Send_To_Buffer（）;
+        V（mutex）;
+        V（s_full）;
+    }
+}
+void  Input_Output_Process（）{
+    而（Output_Finish（）== false）{
+        P（s_full）;
+        P（mutex）;
+        Get_From_Buffer（）;
+        V（mutex）;
+        V（s_empty）;
+        输出（）;
+    }
+}
