@@ -1,0 +1,21 @@
+int count=0; 
+a=1, b=1 ; 
+ 
+读者进程：
+    wait (a);
+	count++;	
+	if (count == 1)
+	       wait(b);
+	signal (a);
+	读入；
+	wait (a);
+	count--;
+	if (count == 0)
+		signal (b);
+	signal (a);
+ 
+ 
+写者进程：     
+      wait(b);
+      写入；
+      signal(b);

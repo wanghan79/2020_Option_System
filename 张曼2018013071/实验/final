@@ -1,0 +1,49 @@
+#V1
+import os
+import sys
+
+allfile = []
+def get_all_file(rawdir):
+      allfilelist=os.listdir(rawdir)
+      for f in allfilelist:
+            filepath=os.path.join(rawdir,f)
+            if os.path.isdir(filepath):
+                  get_all_file(filepath)
+            allfile.append(filepath)
+      return allfile
+
+if __name__=='__main__':
+      if(len(sys.argv) < 2):
+            print("Usage: getallfiles.py rawdir")
+            exit()
+      rawdir = sys.argv[1]
+      #current = os.getcwd()
+      allfiles = get_all_file(rawdir)
+      print allfiles
+#V2
+import os
+import sys
+
+allfiles = []
+def get_all_file(rawdir):
+      for root,dirs,files in os.walk(rawdir):
+            for f in files:
+                  #if(re.search('mp4$'),f):
+                  allfiles.append(os.path.join(root,f))
+            for dirname in dirs:
+                  get_all_file(os.path.join(root,dirname))
+      return allfiles
+
+if __name__=='__main__':
+      if(len(sys.argv) < 2):
+            print("Usage: getallfiles.py rawdir")
+            exit()
+      rawdir = sys.argv[1]
+      #current = os.getcwd()
+      allfiles = get_all_file(rawdir)
+      print allfiles
+      
+      
+      
+命令行输入：python getallfiles.py E:\  就可获取E盘所有文件
+

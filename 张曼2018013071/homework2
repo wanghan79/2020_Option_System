@@ -1,0 +1,27 @@
+Available[j];         //可利用资源
+Max[i,j];             //最大需求矩阵
+Allocation[i,j];      //分配矩阵
+Need[i,j];                                 // 需求矩阵
+Need[i,j]=Max[i,j]-Allocation[i,j]         //关系
+Request[i,j];    //请求矩阵
+if Request[i,j]>Need[i,j];   error;
+else if Request[i,j]<=Need[i,j];   
+continue;
+{
+if Request[i,j] <=Available[j];continue;{
+       Available[j] = Available[j] - Request[i,j];
+　　　　Allocation[i,j] = Allocation[i,j] + Request[i,j];
+　　　　Need[i,j] = Need[i,j] - Request[i,j];
+}
+else if  Request[i,j] >Available[j]; wait;
+}
+void safe(){
+Work=available;
+Finish=false;
+     stepa:
+     find:Finish[i] = false;&&Need[i,j]<=Work[j];
+     if(1) Work[j] = Work[j] + Allocation[i,j];
+　　　　   Finish[i] = true;
+　　　　    go to stepa;
+     if(0)  Finish(ture)
+}

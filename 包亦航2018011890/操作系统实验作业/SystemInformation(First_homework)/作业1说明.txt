@@ -1,0 +1,10 @@
+期末作业1：获取操作系统信息
+
+运行方式：OSInformationGetter_test.py
+
+文件说明：
+1、Random_gener_picker_first.py：信息获取类
+2、Random_gener_picker_first_test.py：对此的测试
+
+程序功能介绍：
+1、系统信息获取类，可应用于一些跨平台程序作为运行环境检测
