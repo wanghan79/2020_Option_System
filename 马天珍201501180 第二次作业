@@ -1,0 +1,111 @@
+我们假设有进程P1,P2,.....Pn
+则安全序列要求满足：Pi(1<=i<=n)需要资源<=剩余资源 + 分配给Pj(1 <= j < i)资源
+为什么等号右边还有已经被分配出去的资源？想想银行家那个问题，分配出去的资源就好比第二个开发商，人家能还回来钱，咱得把这个考虑在内。
+
+我们定义下面的数据结构
+
+Copy
+int n,m; //系统中进程总数n和资源种类总数m
+int Available[1..m]; //资源当前可用总量
+int Allocation[1..n,1..m]; //当前给分配给每个进程的各种资源数量
+int Need[1..n,1..m];//当前每个进程还需分配的各种资源数量
+int Work[1..m]; //当前可分配的资源
+bool Finish[1..n]; //进程是否结束
+安全判定算法#
+1.初始化
+
+Copy
+Work = Available（动态记录当前剩余资源）
+Finish[i] = false（设定所有进程均未完成）
+2.查找可执行进程Pi（未完成但目前剩余资源可满足其需要，这样的进程是能够完成的）
+
+Copy
+Finish[i] = false          
+Need[i] <= Work 
+如果没有这样的进程Pi，则跳转到第4步
+3.（若有则）Pi一定能完成，并归还其占用的资源，即：
+
+Copy
+Finish[i] = true           
+Work = Work +Allocation[i]
+GOTO 第2步，继续查找
+4.如果所有进程Pi都是能完成的，即Finish[i]=ture
+则系统处于安全状态，否则系统处于不安全状态
+
+伪代码:
+
+Copy
+Boolean Found;
+Work = Available; Finish[1..n] = false; 
+while(true){
+    //不断的找可执行进程
+   Found = false;
+   for(i=1; i<=n; i++){
+     if(Finish[i]==false && Need[i]<=Work){
+        Work = Work + Allocation[i];//把放出去的贷款也当做自己的资产
+        Finish[i] = true; 
+        Found = true;
+      }
+    }
+   if(Found==false)break;
+ }
+for(i=1;i<=n;i++) 
+  if(Finish[i]==false)return “deadlock”; //如果有进程是完不成的，那么就是有死锁
+示例#
+举个实际例子，假设下面的初始状态：
+
+process	Allocation	Need	Available
+A B C	A B C	A B C
+P0	0 1 0	7 4 3	3 3 2
+P1	2 0 0	1 2 2	
+P2	3 0 2	6 0 0	
+P3	2 1 1	0 1 1	
+P4	0 0 2	4 3 1	
+首先，进入算法第一步，初始化。
+那么Work = Available = [3 3 2]
+
+首先看P0：
+P0的Need为[7 4 3]，Available不能满足，于是跳过去
+
+P1的Need为[1 2 2]可以满足，我们令Work = Allocation[P1] + Work
+此时Work = [5 3 2]
+
+再看P2，P2的Need为[6 0 0]，那么现有资源不满足。跳过去。
+
+看P3，那么看P3，Work可以满足。那么令Work = Allocation[P3] + Work，此时Work = [7 4 3]
+
+再看P4，Work可以满足。令Work = Allocation[P4] + Work ，此时Work = [7 4 5]
+
+到此第一轮循环完毕，由于找到了可用进程，那么进入第二轮循环。
+
+看P0，Work此时可以满足。令Work = Allocation[P0] + Work ，此时Work = [7 5 5]
+
+再看P2，此时Work可以满足P2。令Work = Allocation[P2] + Work ， 此时Work = [10 5 7]
+
+至此，算法运行完毕。找到安全序列<P1,P3,P4,P0,P2>，证明此时没有死锁危险。(安全序列未必唯一)
+
+资源请求算法#
+之前说完了怎么判定当前情况是否安全，下面就是说当有进程新申请资源的时候如何处理。
+我们将第i个进程请求的资源数记为Requests[i]
+
+算法流程：
+
+1.如果Requests[i]<=Need[i]，则转到第二步。否则，返回异常。这一步是控制进程申请的资源不得大于需要的资源
+
+2.如果Requests[i]<=Available，则转到第三步，否则Pi等待资源。
+
+3.如果满足前两步，那么做如下操作：
+
+Copy
+Available = Available -Requests[i]
+Allocation = Allocation[i]+Requests[i]
+Need[i]=Need[i]-Requests[i]
+调用安全判定算法，检查是否安全
+if(安全)
+{
+    申请成功，资源分配
+}
+else
+{
+    申请失败，资源撤回。第三步前几个操作进行逆操作
+}
