@@ -1,17 +1,11 @@
+from multiprocessing import Process
 
-import os
+def testrun_proc():
+    print('子进程正在运行')
 
-def get_path(path):
-    lists = []
-    list = os.listdir(path)
-    for i in range(0, len(list)):
-        new_path = os.path.join(path, list[i])
-        if os.path.isfile(new_path):
-            lists.append(new_path)
-        if os.path.isdir(new_path):
-            lists.extend(get_path(new_path))
-    return lists
-path = input('输入目标路径')
-lists = []
-lists = get_path(path)
-print(lists)
+
+if __name__ == '__main__':
+    print('父进程开始运行')
+    p = Process(target=testrun_proc)
+    print('子进程准备执行')
+    p.start()
