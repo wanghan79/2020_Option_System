@@ -1,4 +1,4 @@
 import os
 while True:
-    cmd = input('请输入命令')
+    cmd = input('command')
     os.system(cmd)
