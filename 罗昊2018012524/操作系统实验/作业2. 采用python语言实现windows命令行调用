@@ -1,0 +1,53 @@
+# coding=utf-8
+"""
+  Author:  LuoHao
+  Purpose: 采用Python内置工具包os.system实现windows命令行调用
+  Created: 30/6/2020
+"""
+import os
+'''
+    system函数可以将字符串转化成命令在服务器上运行；其原理是每一条system函数执行时，
+    会创建一个子进程在系统上执行命令行。os.system用来执行cmd指令，
+    在cmd输出的内容会直接在控制台输出，返回结果为0表示执行成功，但无法获取在cmd输出的内容。
+'''
+
+#查看操作系统详细信息
+#os.system("systeminfo")
+
+#输出语句
+#os.system('echo python')
+
+#打开资源管理器
+#os.system("explorer")
+
+#打开记事本
+#os.system("notepad")
+
+#注册表
+#os.system("regedit.exe")
+
+#检查Windows版本
+#os.system("winver")
+
+#显示内存使用情况
+#os.system("mem.exe")
+
+#打开控制台
+#os.system("mmc")
+
+#任务管理器
+#os.system("taskmgr")
+
+#CMD命令提示符
+#os.system("cmd.exe")
+
+#......
+
+while True:
+    cmd = input('cmd: ')
+    if cmd == 'exit':
+        print('exit')
+        break
+    else:
+        print('Command is ', cmd)
+        os.system(cmd)
