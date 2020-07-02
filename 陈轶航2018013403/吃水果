@@ -1,0 +1,48 @@
+semaphore mutex=1, S1=0, S2=0, S=N;
+void father( )
+{
+   while(true)
+   {
+   	P(S);
+   	P(mutex);
+   	将水果放入盘子;
+	V(mutex);
+	if(是橘子)
+	V(S1);
+	else
+	V(S2); 
+   }	
+} 
+
+void Son( )
+{
+	while(true)
+	{
+		P(S1);
+		P(mutex);
+		取橘子;
+		V(mutex);
+		V(S);
+		吃橘子; 
+	}
+}
+
+void Daughter( )
+{
+	while(true)
+	{
+		P(S2);
+		P(mutex);
+		取苹果;
+		V(mutex);
+		V(S);
+		吃苹果; 
+	}
+}
+
+void main()
+{
+	Father();
+	Son();
+	Daughter();
+}
