@@ -41,6 +41,7 @@ pcp.exe()
 
 #input case:
 '''
+help
 notepad
 ipconfig
 read cmds.txt  
