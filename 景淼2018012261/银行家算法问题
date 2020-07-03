@@ -1,5 +1,5 @@
 #进程Pi申请某类型资源向量
-Request[m][n]
+Request[n][m]
 #可利用资源向量
 Available[m]
 #最大需要矩阵
