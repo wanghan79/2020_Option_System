@@ -1,6 +1,9 @@
-usr/bin/env python
-# -*- coding:utf-8 -*-
-
+# coding=utf-8
+"""
+  Author:  LuoHao
+  Purpose: 采用python语言获取操作系统信息
+  Created: 30/6/2020
+"""
 import platform
 
 os = platform.system()
@@ -23,15 +26,6 @@ platform.architecture()
         platform.node()            #计算机的网络名称，'DESKTOP-5GRGK6L'
         platform.processor()       #计算机处理器信息，'Intel64 Family 6 Model 158 Stepping 10, GenuineIntel'
         platform.uname()           #包含上面所有的信息汇总:(uname_result(system='Windows', node='DESKTOP-5GRGK6L', release='10', version='10.0.18362', machine='AMD64', processor='Intel64 Family 6 Model 158 Stepping 10, GenuineIntel'))
-        还可以获得计算机中python的一些信息：
-        import platform
-        platform.python_build()
-        platform.python_compiler()
-        platform.python_branch()
-        platform.python_implementation()
-        platform.python_revision()
-        platform.python_version()
-        platform.python_version_tuple()
 '''
 # global var
 # 是否显示日志信息
@@ -120,38 +114,12 @@ def show_os_info():
     print(get_system())
     print(get_uname())
 
-def show_python_all_info():
-    '''打印python的全部信息'''
-    print('The Python build number and date as strings : [{}]'.format(get_python_build()))
-    print('Returns a string identifying the compiler used for compiling Python : [{}]'.format(get_python_compiler()))
-    print('Returns a string identifying the Python implementation SCM branch : [{}]'.format(get_python_branch()))
-    print('Returns a string identifying the Python implementation : [{}]'.format(get_python_implementation()))
-    print('The version of Python ： [{}]'.format(get_python_version()))
-    print('Python implementation SCM revision : [{}]'.format(get_python_revision()))
-    print('Python version as tuple : [{}]'.format(get_python_version_tuple()))
-
-def show_python_info():
-    '''只打印python的信息，没有解释部分'''
-    print(get_python_build())
-    print(get_python_compiler())
-    print(get_python_branch())
-    print(get_python_implementation())
-    print(get_python_version())
-    print(get_python_revision())
-    print(get_python_version_tuple())
-
 def test():
     print('操作系统信息:')
     if SHOW_LOG:
         show_os_all_info()
     else:
         show_os_info()
-    print('#' * 50)
-    print('计算机中的python信息：')
-    if SHOW_LOG:
-        show_python_all_info()
-    else:
-        show_python_info()
 
 def init():
     global SHOW_LOG

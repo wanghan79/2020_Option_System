@@ -1,3 +1,4 @@
+# encoding:utf-8
 '''
 @name    :   OS_get_Information
 @Contact :   pengzhihan666@gmail.com
@@ -51,6 +52,6 @@ class OS_get_Information(object):
         self.get_node()
         self.get_processor()
         self.get_uname()
-
-os_info = OS_get_Information()
-os_info.get_informations()
+if __name__ == "__main__":
+    os_info = OS_get_Information()
+    os_info.get_informations()

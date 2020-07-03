@@ -1,0 +1,47 @@
+# coding=utf-8
+"""
+  Author:  LuoHao
+  Purpose: 采用Python语言创建多进程
+  Created: 30/6/2020
+"""
+"""
+Process常用属性与方法：
+  name:进程名
+  pid：进程id
+  run() 自定义子类时覆写
+  start() 开启进程
+  join(timeout=None) 阻塞进程
+  terminate() 终止进程
+  is_alive() 判断进程是否存活
+"""
+import os
+import time
+from multiprocessing import Process
+
+def fun1():
+  print("子进程1执行中>>> pid={0},ppid={1}".format(os.getpid(),os.getppid()))
+  print('子进程1')
+  time.sleep(2)
+  print("子进程1终止>>> pid={0}".format(os.getpid()))
+
+def fun2():
+  print("子进程2执行中>>> pid={0},ppid={1}".format(os.getpid(),os.getppid()))
+  print('子进程2')
+  time.sleep(2)
+  print("子进程2终止>>> pid={0}".format(os.getpid()))
+
+def main():
+  print("主进程执行中>>> pid={0}".format(os.getpid()))
+  # 创建子进程实例
+  p1 = Process(target=fun1, name="fun1", args=())
+  p2 = Process(target=fun2, name="fun2", args=())
+  # 启动进程
+  p1.start()
+  p2.start()
+  # 阻塞进程
+  p1.join()
+  p2.join()
+  print("主进程终止")
+
+if __name__ == '__main__':
+  main()

@@ -4,16 +4,18 @@
   Purpose: Get all files and folders in a given file directory under the operating system.
   Created: 29/6/2020
 """
-def get_all_path(open_file_path):
-    rootdir = open_file_path
-    path_list = []
-    list = os.listdir(rootdir)  # 列出文件夹下所有的目录与文件
-    for i in range(0, len(list)):
-        com_path = os.path.join(rootdir, list[i])
-        #print(com_path)
-        if os.path.isfile(com_path):
-            path_list.append(com_path)
-        if os.path.isdir(com_path):
-            path_list.extend(get_all_path(com_path))
-    #print(path_list)
-    return path_list
+import os
+
+def list(i):
+    dir_files = os.listdir(i)
+
+    for file in dir_files:
+        file_path = os.path.join(i, file)
+        if os.path.isfile(file_path):
+            print(file_path)
+
+        if os.path.isdir(file_path):
+            list(file_path)
+if __name__ == '__main__':
+    dir_path =input('Enter your file path here:')
+    list(dir_path)

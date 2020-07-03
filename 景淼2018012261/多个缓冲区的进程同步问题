@@ -1,0 +1,34 @@
+这是一个同步＋互斥问题。
+设置信号量bufferEmpty表示空缓冲区的数目，令bufferEmpty=n
+设置信号量bufferFull表示已用缓冲区的数目，令bufferFull=0
+因为缓冲区为n，有限个有界缓冲区是一个临界资源，因此设置一个互斥信号量mutex，令mutex=1
+令n个缓冲区为buffer[n]
+
+def produce():
+  i=0
+  while(1):
+    生产
+    P(bufferEmpty)
+    P(mutex)
+    Buffer[i]占用
+    i=(i+1)%n
+    V(mutex)
+    V(bufferFull)
+
+
+def consumer():
+  j=0
+  while(1):
+    P(bufferFull)
+    P(mutex)
+    Buffer[j]变空
+    j=(j+1)%n
+    V(mutex)
+    V(bufferFull)
+
+
+def apply():
+  produce()
+  consumer()
+
+apply()
