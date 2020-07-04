@@ -1,0 +1,26 @@
+#邹佳鑫第一次作业
+
+sempty = N
+sfull = 0
+mutex = 1
+def P():
+    while(1):
+        count()
+        P(sempty)
+        P(mutex)
+        sendToBuffer()
+        V(mutex)
+        V(sfull)
+def C():
+    while(1):
+        P(sfull)
+        P(mutex)
+        getFromBuffer()
+        V(mutex)
+        V(sempty)
+        print("num") 
+def apply():
+  P()
+  C()
+
+apply() 
