@@ -1,0 +1,10 @@
+'''
+结课作业：采用Python语言获取操作系统下给定文件目录下的所有文件及文件夹（包括子文件夹），并输出到屏幕；提示：采用Python内置工具包os.path
+'''
+import os
+
+path = input('请输入文件夹的路径：').rstrip('/') + '/'
+for root, dirs, files in os.walk(path):
+    print('当前目录为：', root)
+    print('当前目录下的文件夹：', dirs)
+    print('当前目录下的文件：', files)

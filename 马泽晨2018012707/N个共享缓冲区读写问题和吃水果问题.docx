@@ -1,0 +1,174 @@
+N个共享缓冲区读写问题和吃水果问题
+
+（1）
+
+int i=0;j=0; Int mutex=1;
+
+    Int buffer[N];
+
+       semaphore mutex=1,empty=N,full=0;
+
+void write()
+
+{
+
+ While(1)
+
+{
+
+计算数据；
+
+P(empty);
+
+P(mutex);
+
+  放入数据；
+
+   I=(i+1)%N;
+
+   V(mutex);
+
+   V(full);
+
+}
+
+}
+
+Void read()
+
+{
+
+  While(1)
+
+{
+
+    P(full);
+
+    P(mutex);
+
+    取出数据；
+
+    j=(j+1)%N;
+
+    V(mutex);
+
+    V(empty);
+
+    输出数据；
+
+}
+
+}
+
+void main()
+
+{
+
+   cobegin;
+
+    cp();  
+
+iop();
+
+   coend;
+
+}
+
+  
+
+（2）
+semaphore empty= N, orange = 0, apple = 0, mutex = 1;
+
+Father()
+
+ {
+
+while (1)
+
+   {
+
+P(empty);
+
+ P (mutex);
+
+将水果放入盘中;
+
+V(mutex);
+
+if (放入的是orange)  
+
+V(orange);  
+
+else  
+
+V(apple);
+
+}
+
+}
+
+Son() 
+
+{
+
+     while (1) 
+
+{
+
+           P(orange);
+
+           P(mutex);
+
+           从盘中取一个orange;
+
+           V(mutex);
+
+           V(empty);
+
+           吃orange;
+
+         }
+
+}
+
+Daughter()
+
+     {
+
+       while (1) 
+
+{
+
+          P(apple);
+
+          P(mutex);
+
+          从盘中取一个apple;
+
+          V(mutex);
+
+          V(empty);
+
+          吃apple;
+
+        }
+
+}
+
+Int main()
+
+{
+
+cobegin
+
+Father();
+
+ Son();
+
+Daughter();
+
+coend
+
+}
+
+	

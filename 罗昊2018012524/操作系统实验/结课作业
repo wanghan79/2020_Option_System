@@ -1,0 +1,30 @@
+# coding=utf-8
+"""
+  Author:  LuoHao
+  Purpose: 采用Python语言获取操作系统下给定文件目录下的所有文件及文件夹（包括子文件夹），并输出到屏幕。
+  Created: 30/6/2020
+"""
+
+import os
+
+def get_all_path(open_file_path):
+    rootdir = open_file_path
+    path_list = []  # 保存在list中
+    list = os.listdir(rootdir)  # 遍历文件夹下所有的目录与文件
+    for i in range(0, len(list)):
+        com_path = os.path.join(rootdir, list[i])   # 获取文件夹的绝对路径
+        if os.path.isfile(com_path):    # 如果是文件就加入list
+            path_list.append(com_path)
+        if os.path.isdir(com_path):    # 如果是文件夹则递归调用get_all_path
+            path_list.extend(get_all_path(com_path))
+    return path_list
+
+if __name__ == '__main__':
+    dir_path = input('path: ')  # 输入需要查询的文件夹路径
+    for i in get_all_path(dir_path):
+        print(i)
+
+    # 操作系统文件 示例
+    # dir_path = 'C:\Windows'  # 操作系统所在默认路径
+    # for i in get_all_path(dir_path):
+        # print(i)

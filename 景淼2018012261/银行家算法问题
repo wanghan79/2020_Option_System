@@ -1,0 +1,57 @@
+#进程Pi申请某类型资源向量
+Request[n][m]
+#可利用资源向量
+Available[m]
+#最大需要矩阵
+Max[n][m]
+#分配矩阵
+Allocation[n][m]
+#需要矩阵
+Need[n][m]
+#Need[i][j]=Max[i][j] - Allocation[i][j] / 需要=最大需要-分配
+
+#进程Pi申请j型资源k个
+def pApplyFor(i,j,k):
+  if Request[i][j]<=Need[i][j]:
+    if Request[i][j]<=Available[j]：
+      distributeP(i,j,k)
+    else:
+      Pi等待
+  else:
+    print(“错误！申请资源量已超过宣布最大值！”)
+
+#为进程Pi分配j型资源k个
+def distributeP(i,j,k):
+  Available[j]=Available[j]-Request[i][j]
+  Allocation[i][j]=Allocation[i][j]+Request[i][j]
+  Need[i][j]=Need[i][j]-Request[i][j]
+  
+  result=test()
+  
+  if result==0:
+    Available[j]=Available[j]+Request[i][j]
+    Allocation[i][j]=Allocation[i][j]-Request[i][j]
+    Need[i][j]=Need[i][j]+Request[i][j]
+
+#安全检测算法
+def test():
+  for i in range(0,m):
+    Work[i]=Available[i]
+  for i in range(0,m):
+    Finish[i]=false
+
+  for i in range(0,m):
+    if Finish[i]==false:
+      for j in range(0,n):
+        if Need[i][j]<=Work[j]:
+          Work[j]=Work[i]+Allocation[i][j]
+          Finish[i]=true
+  count=0
+  for i in range(0,m):
+    if Finish[i]==true:
+      count=count+1
+  if count==n:
+    return 1
+  else:
+    return 0
+    

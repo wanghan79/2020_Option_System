@@ -1,0 +1,23 @@
+期末作业3：多线程创建
+
+运行方式：windows version运行OneProducer_MultiConsumer.py
+		Linux version运行OneProducer_MultiConsumer_test.py
+
+文件说明：
+1、SimpleFastaDealer.py：进行简单的fasta序列逐条分离
+2、OneProducer_MultiConsumer.py：主要的生产者消费者类
+3、TestFasta.fasta：示例fasta
+
+程序功能介绍：
+1、windows version和Linux version的功能都是相同的，模拟单生产者多消费者问题，生产者每次生产一个fasta序列放入缓冲队列中，消费者每次从中取出并在控制台上打印吃结果
+
+实验总结：
+1、这里利用python自带的multiprocessing包对同一个消费者函数实现了多线程的创建。在使用过程中我也
+发现：这里的multiprocessing中自带的方法都已经在内部实现了相应的同步互斥操作，可以说这些方法就
+像一个管程。比如这里的multiprocessing.queue，就已经自动实现了互斥访问的操作，无需我们再人工增加
+响应的机制。
+2、在这里，出现了windows系统和Linux系统底层实现机制的区别。因为原先我的程序都在本机（MacOSX）上进行程序
+运行与调试，该系统和Linux一样均为Unix based，但当我为了测试跨平台性能在windows 10上运行的时候发现程序
+出现了错误。经过查阅官方multiprocessing包说明，发现，windows系统无法像linux系统一样实现
+线程的fork，并且开启新Python解析器或者创建新process时,必须确定主模块能够安全的导入。于是我又重新
+针对windows特性进行了windows版的开发，主要改动在于取消类封装，线程的创建一律转至__main__下面
