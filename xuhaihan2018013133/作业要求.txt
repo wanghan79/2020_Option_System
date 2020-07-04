@@ -1,0 +1,7 @@
+作业对照表：
+操作系统实验作业：
+作业1. 采用python语言获取操作系统信息；提示：使用Python内置platform工具包
+作业2. 采用python语言实现windows命令行调用；提示：采用Python内置工具包os.system
+作业3. 采用Python语言创建多进程；提示：采用Python内置工具包multiprocessing
+结课作业：采用Python语言获取操作系统下给定文件目录下的所有文件及文件夹（包括子文件夹），并输出到屏幕；提示：采用Python内置工具包os.path
+建议大家充分搜索互联网资源完成作业，作业单独建立“操作系统作业”文件夹，提交到GitHub中操作系统项目下各自的文件夹下。
