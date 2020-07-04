@@ -1,0 +1,83 @@
+Monitor  Customer_barber():
+
+        sofa=5;
+
+        waiting=0;
+
+        customer=0;
+
+        barber=0;
+
+        mutex=1;
+
+
+
+
+
+     def  Get_haircut():
+
+	        wait(mutex);
+
+          if(waiting<sofa):
+
+	             waiting+=1;
+
+	             signal(customers);
+
+	             signal(mutex);
+
+	             wait(barbers);
+
+	             #the barber cut the hair
+
+	        else:
+
+	             signal(mutex);
+
+
+
+
+
+     def  Cut_hair():
+
+	        wait(customers);
+
+	        wait(mutex);
+
+	        waiting-=1;
+
+          #the customer gets the haircut
+
+          signal(barbers);	
+
+          signal(mutex);
+
+	
+
+      def  Customer():
+
+	         Customer_barber.Get_haircut();
+
+    
+
+
+
+      def  Barber():	
+
+            while(1):
+
+	              Customer_barber.Cut_hair();
+
+     
+
+
+
+      def  main():
+
+         cobein
+
+	       Customer();     
+
+         Barber();
+
+         coend

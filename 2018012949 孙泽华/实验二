@@ -1,0 +1,7 @@
+'''
+作业2. 采用python语言实现windows命令行调用；提示：采用Python内置工具包os.system
+'''
+import os
+
+# 执行第一题的代码
+os.system('python 1.py')

@@ -1,0 +1,30 @@
+semaphore mutex=1, S2=N, S1=0;
+void CP ()
+{
+	while(true)
+	{
+		得到一个计算结果;
+		P(S2);
+		P(mutex);
+		送到缓冲区;
+	     V(mutex);
+		V(S1); 
+	}
+} 
+void IOP()
+{
+	while(true)
+	{
+		P(S1);
+		P(mutex);
+		从缓冲区取数;
+		V(mutex);
+		V(S2);
+		从打印机上输出; 
+	}
+}
+void main()
+{
+CP();
+	IOP();
+}

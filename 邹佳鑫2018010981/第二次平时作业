@@ -1,0 +1,50 @@
+#邹佳鑫第二次作业
+
+Request[i][j]
+Available[j] //#可利用资源向量
+Max[i][j]  //#最大需要矩阵
+Allocation[i][j]//#分配矩阵
+Need[i][j]//#需要矩阵
+#Need[n][m]=Max[n][m] - Allocation[n][m]
+
+def pApplyFor(n,m,k):
+  if Request[n][m]<=Need[n][m]:
+    if Request[n][m]<=Available[m]：
+      distributeP(n,m,k)
+    else:
+      Pi等待
+  else:
+    print(“错误！申请资源量已超过宣布最大值！”)
+
+def distributeP(n,m,k):
+  Available[m]=Available[m]-Request[n][m]
+  Allocation[n][m]=Allocation[n][m]+Request[n][m]
+  Need[n][m]=Need[n][m]-Request[n][m]
+  
+  result=test()
+  
+  if result==0:
+    Available[m]=Available[m]+Request[n][m]
+    Allocation[n][m]=Allocation[n][m]-Request[n][m]
+    Need[n][m]=Need[n][m]+Request[n][m]
+    
+def test():
+  for n in range(0,j):
+    Work[n]=Available[n]
+  for n in range(0,j):
+    Finish[n]=false
+
+  for n in range(0,j):
+    if Finish[n]==false:
+      for m in range(0,i):
+        if Need[n][m]<=Work[m]:
+          Work[m]=Work[n]+Allocation[n][m]
+          Finish[i]=true
+  count=0
+  for n in range(0,j):
+    if Finish[n]==true:
+      count=count+1
+  if count==i:
+    return 1
+  else:
+    return 0

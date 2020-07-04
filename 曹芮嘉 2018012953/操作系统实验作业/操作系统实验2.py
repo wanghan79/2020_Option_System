@@ -7,6 +7,18 @@
 
 import os
 
-while True:
-    cmd = input('Please enter the command!')
-    os.system(cmd)
+os.system('dir')
+os.system('java -version')
+os.system('ipconfig')
+os.system("calc")
+os.system("cmd.exe")
+os.system("appwiz.cpl")
+os.system("certmgr.msc")
+os.system('control')
+os.system("cleanmgr")
+os.system("iexpress")
+os.system("cmstp")
+
+order = input('Please enter your command:')
+
+os.system(order)

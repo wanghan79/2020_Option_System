@@ -1,7 +1,7 @@
 import os
 os.system("calc")
 #启动计算器
-os.system("certmgr.msc"
+os.system("certmgr.msc")
 #证书管理实用程序
 os.system("cleanmgr")
 # 打开磁盘清理工具

@@ -1,0 +1,73 @@
+多个缓冲区的进程同步互斥问题
+谭琳2018012119
+1.对N个共享缓冲区读写问题
+（一）首先判断这是个同步互斥问题
+（二）两个进程分别为写Write和打印Print进程
+（三）设置信号量Isused, Spared, Record分别表示缓冲区是否被占用，剩余空间及目前被占用的
+（四）主进程：
+Semaphore Isused=1，Spared=N，Record=0;
+Write(){
+While(1){
+Prepare data;
+P(Spared);
+P(Isused);
+Send the data to the buffer;
+V(Record);
+V(Isused);
+}
+}
+Print(){
+		While(1){
+			P(Record);
+P(Isused);
+Read data from the buffer;
+V(Spared);
+V(Isused);
+Print data;
+}
+}
+2.盘中可放N个水果的吃水果问题
+（一）这是个同步互斥问题
+（二）有三个进程分别为Father，Son，Daughter
+（三）设置信号量Plate， Apple，Orange分别表示盘子是否为空，是否有苹果，是否有桔子，再设置一个Spare表示盘子剩余空间
+（四）主进程：
+Semaphore Plate=1，Spared=N，Apple=0，Orange=0；
+Father(){
+while(1){
+Prepare a apple;
+P(Spare);
+P(Plate);
+Put apple on the plate;
+V(Apple);
+V(Plate);
+Prepare an orange;
+P(Spare);
+P(Plate);
+Put orange on the plate;
+V(Orange);
+V(Plate);
+}
+}
+Son(){
+while(1){
+P(Orange);
+P(Plate);
+Take orange;
+V(Spare);
+V(Plate);
+Eat orange;
+}
+}
+Daughter(){
+while(1){
+P(Apple);
+P(Plate);
+Take apple;
+V(Spare);
+V(Plate);
+Eat apple;
+}
+}
+
+
+
