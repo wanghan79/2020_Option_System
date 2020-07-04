@@ -1,0 +1,71 @@
+'''
+作业3. 采用Python语言创建多进程；提示：采用Python内置工具包multiprocessing
+结课作业：采用Python语言获取操作系统下给定文件目录下的所有文件及文件夹（包括子文件夹），并输出到屏幕；提示：采用Python内置工具包os.path
+'''
+import os
+import random
+import time
+from multiprocessing import Process, Queue, Pool
+
+
+# 子进程需要执行的代码   单线程定义的函数
+def run_proc(name):
+    print('运行子进程{}  {}...'.format(name, os.getpid()))
+
+
+# 进程池定义的代码
+def long_time_task(name):
+    print('运行子进程{},ID{}'.format(name, os.getpid()))
+    start = time.time()
+    time.sleep(random.random() * 3)
+    end = time.time()
+    print('进程{}运行了{:.2}秒'.format(name, (end-start)))
+
+
+# 线程通信写
+def write(q):
+    for value in ['A', 'B', 'C']:
+        print('上传{}到queue'.format(value))
+        q.put(value)
+        time.sleep(random.random())
+
+
+# 线程通信读
+def read(q):
+    while True:
+        value = q.get()
+        print('从queue获取到了{}'.format(value))
+
+
+if __name__ == '__main__':
+    # # 单线程代码
+    # print('{}'.format(os.getpid()))
+    # p = Process(target=run_proc, args=('test', ))
+    # print('开始')
+    # p.start()
+    # p.join()
+    # print('结束')
+
+    # # 线程池代码
+    # print('父进程ID{}'.format(os.getpid()))
+    # p = Pool()
+    # for i in range(5):
+    #     p.apply_async(long_time_task, args=(i, ))
+    # print('请等待所有子进程完成')
+    # p.close()
+    # p.join()
+    # print('所有进程完成')
+
+    # 线程通信代码
+    # 父进程创建Queue，并传递给子进程
+    q = Queue()
+    pw = Process(target=write, args={q, })
+    pr = Process(target=read, args={q, })
+    # 启动子进程pw，写入
+    pw.start()
+    # 启动子进程read，读取
+    pr.start()
+    # 等待pw结束
+    pw.join()
+    # pr进程是死循环，无法等待其结束，只能强行终止
+    pr.terminate()

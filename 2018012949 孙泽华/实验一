@@ -1,0 +1,14 @@
+
+'''
+作业1. 采用python语言获取操作系统信息；提示：使用Python内置platform工具包
+'''
+import platform
+
+print('系统名称：', platform.system())
+print('版本号：', platform.version())
+print('位数：', platform.architecture())
+print('计算机类型：', platform.machine())
+print('网络名称：', platform.node())
+print('处理器信息：', platform.processor())
+
+print('详细信息：\n', platform.uname())
