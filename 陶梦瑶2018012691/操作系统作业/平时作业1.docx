@@ -1,0 +1,33 @@
+多个缓冲区的进程同步问题
+Semaphore mutex=1,sa=n,sb=0; 
+
+void cp()
+{
+while(true)
+{
+P(sa);
+P(mutex);
+V(mutex);
+V(sb);
+}
+}
+
+viod iop()
+{ 
+while(true)
+{
+	P(sb);
+P(mutex);
+V(mutex);
+V(sa)
+} 
+}
+
+Void main()
+{
+	cobegin
+		cp();
+		iop();
+coend
+}
+
