@@ -1,0 +1,452 @@
+1生产者消费者问题
+
+1.1使用二元信号量解决无限缓冲区的生产者消费者问题
+
+//使用二元信号量解决无限缓冲区的生产者消费者问题
+int count = 0;    //count为缓冲区中的数据项个数
+BinSem s = 1, delay = 0;    //s为二元信号量，控制生产者和消费者进入临界区；
+                            //delay为二元信号量，处理缓冲区为空的情况；
+void producer(){
+    while(1){
+        produce();
+        semWaitB(s);
+        append();
+        count++;
+        if(count==1)semSignalB(delay);    //缓冲区非空，唤醒消费者进程
+        semSignalB(s);
+    }
+}
+ 
+void consumer(){
+    semWaitB(delay);
+    while(1){
+        semWaitB(s);
+        take();
+        count--;
+        m = count;
+        semSignalB(s);
+        consume();
+        //用到m是因为此时在临界区外，在执行下面一条语句之前count可能已经被更新，导致delay不匹配
+        if(m==0)semWaitB(delay);    //缓冲区已空，阻塞消费者进程
+    }	
+}
+1.2使用计数信号量解决无限缓冲区的生产者消费者问题 
+
+//使用计数信号量解决无限缓冲区的生产者消费者问题
+sem count = 0;    //count为信号量，值等于缓冲区数据项的个数；
+BinSem s = 1;    //s为二元信号量，控制生产者消费者进入临界区
+void producer(){
+    while(1){
+        produce();
+        semWaitB(s);
+        append();
+        //下面两行互换没问题，因为消费者必须在两个信号量上等待
+        semSignalB(s);
+        semSignal(count);	//缓冲区非空
+    }	
+}
+void consumer(){
+    while(1){
+        //下面两行互换会死锁,如果缓冲区为空时，消费者进入临界区，会因为缓冲区为空被阻塞
+        //但是又没有释放二元信号量s，造成生产者无法进入临界区
+        semWaitB(count);	
+        semWait(s);
+        take();
+        semSignalB(s);
+        consume();
+    }	
+}
+1.3使用计数信号量解决有限缓冲区的生产者消费者问题
+
+//使用计数信号量解决有限缓冲区的生产者消费者问题
+const int sizeofbuffer = 100;
+sem count = 0;	//count为信号量，值等于缓冲区数据项的个数；
+sem avail = sizeofbuffer;	//avail为信号量，记录空闲空间的数目
+BinSem s = 1;	//s为二元信号量，控制生产者消费者进入临界区
+void producer(){
+    while(1){
+        produce();
+        //下面两行互换会死锁，如果缓冲区满时，生产者进入临界区，会因为缓冲区满被挂起
+        //但是又没有释放二元信号量s，造成消费者无法进入临界区
+        semWait(avial);
+        semWaitB(s);
+        append();
+        //下面两行互换没问题，因为消费者必须在两个信号量上等待
+        semSignalB(s);
+        semSignal(count);	//缓冲区非空
+    }	
+}
+void consumer(){
+    while(1){
+        //下面两行互换会死锁,如果缓冲区为空时，消费者进入临界区，会因为缓冲区为空被挂起
+        //但是又没有释放二元信号量s，造成生产者无法进入临界区
+        semWaitB(count);	
+        semWait(s);
+        take();
+        //下面两行互换没问题，因为生产者必须在两个信号量上等待
+        semSignalB(s);
+        semSignal(avail);    //缓冲区没满
+        consume();
+    }	
+}
+1.4使用管程解决有限缓冲区的生产者消费者问题
+
+//使用管程解决有限缓冲区的生产者消费者问题
+monitor boundedbuffer;    //创建管程
+const int N = 100;
+char buffer[N];
+int nextin,nextout;    //缓冲区指针
+int count;	//缓冲区中数据项的个数
+cond notfull,notempty;    //为同步设置的条件变量
+void append(char x){
+    if(count==N)cwait(notfull);    //缓冲区满，防止溢出
+    buffer[nextin]=x;
+    nextin = (nextin+1)%N;
+    count++;
+    csignal(notempty);    //释放任何一个等待的进程
+}
+void take(){
+    if(count==0)cwait(notempty);    //缓冲区空，防止下溢
+    x = buffer[nextout];
+    nextout = (nextout+1)%N;
+    count--;
+    csignal(notfull);    //释放任何一个等待的进程
+}
+ 
+cmonitor(){    //管程体
+    //缓冲区初始化为空
+    nextin = 0;
+    nextout = 0;
+    count = 0;
+}
+ 
+void producer(){
+    char x;
+    while(1){
+        produce(x);
+        append(x);
+    }
+}
+void consumer(){
+    char x;
+    while(1){
+        take(x);
+        consume(x);
+    }
+}
+1.5使用消息解决有限缓冲区生产者消费者问题
+
+//使用消息解决有限缓冲区生产者消费者问题
+const int capacity = 100;    //缓冲区容量
+void producer(){
+    message pmsg;
+    while(1){
+        receive(mayproduce,pmsg);    //收到空消息，可以生产数据
+        pmsg = produce();
+        send(mayconsume,pmsg);    //发送生产的消息
+    }
+}
+ 
+void consumer(){
+    message cmsg;
+    while(1){
+        receive(mayconsume,cmsg);    //收到消息，可以消费数据
+        consume(cmsg);
+        send(mayproduce,null);    //发送空消息
+    }
+}
+ 
+void main(){
+    create_mailbox(mayproduce);
+    create_mailbox(mayconsume);
+    for(int i=0;i<capacity;i++){
+        send(mayproduce,null);	//最初mayproduce信箱充满了空消息	
+    }
+    parbegin(producer,consumer);
+}
+2读者写者问题
+
+2.1读者优先
+
+//读者写者问题，读者优先
+int readcount = 0;    //记录读进程的数目
+BinSem x = 1, w = 1;    //x用于控制readcout被正确地更新；w用于写进程与其他进程的互斥
+void writer(){
+    while(1){
+        semWaitB(w);
+        write();
+        semSignalB(w);
+    }	
+}
+void reader(){
+    while(1){
+        //来了一个读者
+        semWaitB(x);
+        readcount++;
+        if(readcount==1)semWaitB(w);	//读者进入临界区
+        semSignal(x);
+        read();
+        //走了一个读者
+        semWaitB(x);
+        readcount--;
+        if(readcount==0)semSignal(w);	//读者出临界区
+        semSignal(x);
+	}	
+}
+2.2写者优先
+
+//读者写者问题，写者优先
+int readcount = 0, writecount = 0;    //读者进程数目和写者进程数目
+BinSem x = 1, y = 1, z = 1, w = 1, r = 1;
+//x控制readcount的更新，y控制writecount的更新，z防止r上出现长队列
+//w控制写进程与其他进程的互斥，r用于当一个写进程准备访问数据时，禁止所有的读进程
+void reader(){
+    while(1){
+        //来了一个读进程
+        semWaitB(z);
+        semWaitB(r);
+        semWaitB(x);
+        readcount++;
+        if(readcount==1)semWaitB(w);	//禁止写
+        semSignalB(x);
+        semSignalB(r);
+        semSignalB(z);
+        read();
+        //走了一个读进程
+        semWaitB(x);
+        readcount--;
+        if(readcount==0)semSignalB(w);	//允许写
+        semWaitB(x);
+    }	
+}
+void writer(){
+    while(1){
+        //来了一个写进程
+        semWaitB(y);
+        writecount++;
+        if(writecount==1)semWaitB(r);	//禁止读
+        semSignalB(y);
+        semWaitB(w);
+        write();
+        semSignalB(w);
+        //走了一个写进程
+        semWaitB(y);
+        writecount--;
+        if(writecount==0)semSignalB(r);	//允许读
+        semWaitB(y);
+    }	
+}
+2.3使用消息解决读者写者问题
+
+//使用消息解决读者-写者问题
+int count = 100;
+void reader(int i){
+    message rmsg;
+    while(1){
+        rmsg = i;
+        send(readrequest,rmsg);
+        receive(mbox[i],rmsg);
+        read();
+        rmsg = i;
+        send(finished,rmsg);
+    }
+}
+void writer(int j){
+    message rmsg;
+    while(1){
+        rmsg = j;
+        send(writerequest,rmsg);
+        receive(mbox[j],rmsg);
+        write();
+        write();
+        rmsg = j;
+        send(finished,rmsg);
+    }
+}
+ 
+void controller(){
+    while(1){
+        if(count<0){    //没有读进程正在等待
+            if(!empty(finished)){
+                rceive(finished,msg);
+                count++;
+            }else if(!empty(writerequest)){
+                receive(writerequest,msg);
+                writer_id = msg.id;
+                count-=100;
+            }else if(!empty(readrequest)){
+                receive(readquest,msg);
+                count--;
+                send(msg.id,"OK");
+            }
+        }
+        if(count==0){	//唯一未解决的请求是写请求
+            send(writer_id,"OK");
+            receive(finished,msg);
+            count = 100;
+        }
+        while(count<0){	//写进程已经发出一条请求：
+            receive(finished,msg);
+            count++;
+        }
+    }	
+}
+3哲学家就餐问题
+
+3.1利用信号量解决哲学家就餐问题
+
+//利用信号量解决哲学家就餐问题
+sem fork[5] = {1,1,1,1,1};
+sem room = 4;    //一次只允许四个哲学家进入餐厅用餐，故肯定有一个哲学家能拿到两个叉子
+void phylosopher(int i){
+    while(1){
+        think();
+        wait(room);
+        wait(fork[i]);
+        wait(fork[(i+1)%5]); //如果所有哲学家同时先拿起左边的叉子，再拿起右边的叉子，则会死锁，解决方法是加个信号量room
+        eat();
+        signal(fork[i+1]%5);
+        signal(fork[i]);
+        signal(room);
+    }	
+}
+3.2利用管程解决哲学家就餐问题
+
+//利用管程解决哲学家就餐问题
+monitor dining_controller;
+cond ForkReady[5];    //condition variable for synchronization
+bool fork[5] = {true};
+void get_forks(int pid){
+    int left = pid;
+    int right = [++pid]%5;	
+    if(!fork[left])
+        cwait(ForkReady[ready]);
+    fork(left) = false;
+    if(!fork[right])
+        cwait(ForkReady[ready]);
+    fork(right) = false;
+}
+ 
+void release_forks(int pid){
+    int left = pid;
+    int right = [++pid]%5;
+    if(empty(fork[left]))    //no one is waiting for this fork
+        fork[left] = true;
+    else
+        csignal(ForkReady[left]);    //awaken a process waiting for this fork
+    if(empty(fork[right]))
+        fork[right] = true;
+    else
+        csignal(ForkReady[right]);
+}
+ 
+void phylosopher(int k){
+    while(1){
+        think();
+        get_forks(k);
+        eat();
+        release_forks(k);
+    }
+}
+4.用信号量协调三类进程：
+
+问题：圣诞老人在他北极的商店中睡眠，他只能被以下两种情况之一唤醒：（1）所有九头驯鹿都从南太平洋的假期回来，或者（2）某些小孩子在制作玩具时遇到困难。为了让圣诞老人多睡会儿，这些孩子只有三个人都遇到困难时才唤醒他。当三个孩子的问题得到解决，其他想要访问Santa的孩子必须等到那些孩子返回。如果Santa醒来后发现有三个孩子在他的店门口等待，并且最后一只鹿已经从热带回来，则Santa决定让孩子们等到圣诞节之后，因为准备雪橇显得更重要些（假设驯鹿不想离开热带，因此他们呆到不得不回来的最后时刻）。最后一只驯鹿必须在其他鹿在暖棚中等待并且还没有套上缰绳做成雪橇前回来。
+分析：先简单地只考虑圣诞老人和小孩子两个进程。
+child进程：首先需要记录遇到困难的小孩子人数，用初始化为0的变量troubles来记录；每次遇到困难，touble++，当trouble==3时，发信号（work）唤醒圣诞老人；touble是临界区变量，用信号量y保证互斥；又因为当三个孩子的问题得到解决，其他想要访问Santa的孩子必须等到那些孩子返回，所以每次进入child进程，需要先判断trouble==3，如果为真，需要等待圣诞老人发来的问题已解决的信号solved；又因为圣诞老人一次只发送一个solved信号，所以solved上不允许建造长队列，需要额外安排一个等待信号x；
+santa进程：圣诞老人等到唤醒信号后，帮助孩子们解决问题；解决完问题把trouble置零，并发出solved信号；
+代码如下：
+
+
+
+接下来把驯鹿的情况也加以考虑；
+
+驯鹿进程：首先需要记录到家的驯鹿的数量，用初始化为0的变量deers表示；deers是临界区变量，用信号量z保证互斥；当deers==1时，如果有三个孩子再门口等待帮助，圣诞老人会让他们等到圣诞节后，用布尔变量delay来告诉圣诞老人是否需要延期；当deers==9时，9只驯鹿都到家，向圣诞老人发出唤醒信号，为了和小孩子的唤醒信号区分开，额外设置布尔变量flag来告诉圣诞老人是小孩子还是驯鹿唤醒了自己；
+小孩子进程：改动的地方只是再发送唤醒信号之后设置flag；
+圣诞老人进程：被唤醒后，首先判断是否来自小孩子进程，如果是再判断有没有驯鹿已经到家，如果已经有驯鹿到家则延期，否则帮小孩子解决问题；然后判断是否来自驯鹿进程，如果是则帮驯鹿装雪橇。
+实验代码如下：
+
+
+
+
+
+/* troubles为遇到问题并且可以得到帮助的小孩子人数；
+deers为回到家里的驯鹿的数量
+flag记录孩子和驯鹿进程是否发出了唤醒圣诞老人的信号
+delay记录是否需要延期 */
+int troubles = 0, deers = 0;
+bool flag[2] = { false,false };
+bool delay = false;
+ 
+/* solved控制其他孩子等圣诞老人解决完三个孩子的问题；
+x控制solved的队列上只有一个小孩子在等待，其他孩子在x上等待；
+y保证troubles的互斥；
+z保证deers的互斥 ；
+work控制圣诞老人的觉醒
+t0,t1分别保证flag[0]，flag[1]的互斥；
+s保证圣诞老人一次只干一件事（帮小朋友解决问题或帮驯鹿装雪橇） */
+semaphore x = 0, y = 0, z = 0, solved = 0, work = 0, t0 = 0, t1 = 0, s = 1；
+ 
+void child() {
+    while (1) {
+        semWait(x);
+        if (trouble == 3)semWait(solved);
+        semSignal(x);
+ 
+        semWait(y);
+        trouble++;
+        if (trouble == 3) {
+            semSignal(work);	//有三个孩子遇到困难，唤醒圣诞老人
+            semWait(t0);
+            flag[0] = true;	//小孩子发出了唤醒信号 
+            semSignal(t0);
+        }
+        semSignal(y);
+    }
+}
+ 
+void reindeer() {
+    while (1) {
+        semWait(z);
+        deers++;
+        if (deers == 1)delay = true;
+        if (deers == 9) {
+            semSignal(work);	//九只驯鹿到家，唤醒圣诞老人
+            semWait(t1);
+            flag[1] = true;	//驯鹿发出了唤醒信号
+            semSignal(t1);
+        }
+        semSignal(z);
+    }
+}
+ 
+void santa() {
+    while (1) {
+        semWait(work);	//圣诞老人等待被唤醒
+        if (flag[0]) {	//小孩子发出唤醒信号 
+            if (!delay) {	//驯鹿都还没回家 
+                semWait(t0);
+                flag[0] = false;
+                semSignal(t0);
+ 
+                semWait(s);
+                solve();
+                semWait(y);
+                trouble = 0;
+                semSignal(y);
+                semSignal(solved);	//问题解决了，其他孩子可以获得帮助
+                semSignal(s);
+            }
+        }
+        if (flag[1]) {	//驯鹿发出唤醒信号 
+            semWait(t1);
+            flag[1] = false;
+            semSignal(t1);
+ 
+            semWait(s);
+            install_sled();
+            semSignal(s);
+        }
+    }
+}
+ 
+
