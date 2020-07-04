@@ -1,0 +1,55 @@
+设置信号量：
+empty：表示空缓冲区的数目，初值：n；
+full：表示有数据缓冲区的数目，初值：0；
+mutex：用来控制互斥的访问缓冲区，初值为1；
+
+生产者：
+do{	
+	// produce item
+	wait(empty);
+	wait(mutex);
+	// add item to buffer
+	signal(mutex);
+	signal(full);
+}while(TRUE);
+
+消费者：
+do{
+	wait(full);
+	wait(mutex);
+	//remove item from buffer
+	signal(mutex);
+	signal(empty);
+}while(TRUE);
+
+例：
+三个人吃水果问题
+
+void a()
+{
+	while(true)
+	{
+	wait(empty);
+	produce fruit;
+	if(fruit=='西瓜')
+		signal(watermalen);	//告诉b有西瓜
+	else
+		signal(banana);	//告诉c有香蕉
+	}
+}
+void b()
+{
+	while(true)
+	{
+	wait(watermalen);	//取西瓜
+	signal(empty);	//告知a没西瓜
+	}	
+}
+void c()
+{
+	while(true)
+	{
+		wait(banana);	//取香蕉
+		signal	//告知a没香蕉
+	}
+}
