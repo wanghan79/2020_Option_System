@@ -1,0 +1,74 @@
+读写问题：
+设信号量w=1,mutex=1;全局变量readcount=0；   
+     Count()
+     {
+        While(1)
+        {
+	计算；
+           P(empty);
+           P(mutex);
+	结果放入缓冲区；
+           V(mutex);
+           V(readcount);
+         }
+      }
+    
+      Pr()
+      {
+        While(1)
+        {
+           P(readcount);
+           P(mutex);
+	取出缓冲区计算结果；
+           V(mutex);
+           V(empty);
+	打印；
+         }
+      }
+
+Main()
+     {
+        D();
+        X();
+     }
+
+
+吃水果问题：
+Father()
+{
+while(1)
+{
+p(S);
+将水果放入盘中;
+if(是桔子) v(So);
+else v(Sa);
+}
+}
+Son()
+{
+while(1)
+{
+p(So);
+取桔子
+v(S);
+吃桔子;
+}
+}
+Daughter()
+{
+while(1)
+{
+p(Sa);
+取苹果
+v(S);
+吃苹果;
+}
+}
+def main():
+Sa = 0
+So = 0
+S = n
+mutex = 1
+father()
+daughter()
+son()
