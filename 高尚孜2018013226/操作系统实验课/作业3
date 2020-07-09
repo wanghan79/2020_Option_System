@@ -1,0 +1,47 @@
+from multiprocessing import Process,Pool
+import os, time, random
+
+def pr1(process_name):
+ 
+    for i in range(5):
+        print(process_name, os.getpid())  # 打印出当前进程的id
+        time.sleep(1)
+
+
+def pr2(process_name):
+
+    for i in range(5):
+        print(process_name, os.getpid())  # 打印出当前进程的id
+        time.sleep(1)
+
+
+def long_time_task(name):
+
+    print('Run task %s (%s)...' % (name, os.getpid()))
+    start = time.time()
+    time.sleep(random.random())
+    end = time.time() 
+    print('Task %s runs %0.2f seconds.' % (name, (end - start)))
+
+
+if __name__ == "__main__":
+   
+    print("main process run...")
+    
+    p1 = Process(target=pr1, args=('process_name1',))
+    p2 = Process(target=pr2, args=('process_name2',))
+
+    p1.start()  
+    p2.start() 
+    p1.join()   # 调用了px.join()方法，该方法会阻塞父进程，直到子进程全部运行完成后才会继续运行父进程。
+    p2.join()
+    print("main process ran all lines...\n")
+
+
+    print('Parent process %s.' % os.getpid())
+    p = Pool(4) 
+    for i in range(5):
+        p.apply_async(long_time_task, args=(i,)) # apply_async 是异步非阻塞的。即不用等待当前进程执行完毕，随时根据系统调度来进行进程切换
+    print('Waiting for all subprocesses done...')
+    p.close()
+    p.join()

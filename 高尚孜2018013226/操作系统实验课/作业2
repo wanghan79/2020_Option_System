@@ -1,0 +1,5 @@
+import os
+
+class cmd():
+   os.system('dir e:') 
+   os.system(r'"E:\Dev-Cpp\devcpp.exe"')
